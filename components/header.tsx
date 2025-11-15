@@ -3,14 +3,17 @@
 import { Menu, X, User, Search, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const pathname = usePathname();
+  const isProfilePage = pathname !== '/';
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
+    <header className={`${isProfilePage ? '' : 'sticky top-0'} z-50 bg-white border-b border-gray-100`}>
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
