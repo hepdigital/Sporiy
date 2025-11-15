@@ -62,11 +62,12 @@ const profiles = {
 };
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const profile = profiles[params.slug as keyof typeof profiles];
+  const { slug } = await params;
+  const profile = profiles[slug as keyof typeof profiles];
   
   if (!profile) {
     return {
@@ -85,8 +86,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function ProfilePage({ params }: Props) {
-  const profile = profiles[params.slug as keyof typeof profiles];
+export default async function ProfilePage({ params }: Props) {
+  const { slug } = await params;
+  const profile = profiles[slug as keyof typeof profiles];
 
   if (!profile) {
     notFound();
