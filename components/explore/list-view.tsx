@@ -1,18 +1,45 @@
 'use client';
 
 import Link from 'next/link';
-import { Star, MapPin, Heart } from 'lucide-react';
+import { Star, MapPin, Heart, Navigation } from 'lucide-react';
 import { useState } from 'react';
 import { ImageWithFallback } from '@/components/image-with-fallback';
 import { Button } from '@/components/ui/button';
 import { FilterState } from './explore-view';
-import { mockProfiles } from '@/lib/mock-data';
+
+type Profile = {
+  id: number;
+  type: string;
+  name: string;
+  slug: string;
+  category: string;
+  location: string;
+  coordinates: { lat: number; lng: number };
+  rating: number;
+  reviews: number;
+  description: string;
+  coverImage: string;
+  specialties?: string[];
+  isPremium?: boolean;
+};
 
 type Props = {
   filters: FilterState;
+  profiles: Profile[];
+  hoveredProfileId: number | null;
+  setHoveredProfileId: (id: number | null) => void;
+  selectedProfileId: number | null;
+  setSelectedProfileId: (id: number | null) => void;
 };
 
-export function ListView({ filters }: Props) {
+export function ListView({ 
+  filters, 
+  profiles,
+  hoveredProfileId,
+  setHoveredProfileId,
+  selectedProfileId,
+  setSelectedProfileId
+}: Props) {
   const [favorites, setFavorites] = useState<number[]>([]);
 
   const toggleFavorite = (id: number) => {
@@ -21,143 +48,129 @@ export function ListView({ filters }: Props) {
     );
   };
 
-  // Filter profiles
-  const filteredProfiles = mockProfiles.filter((profile) => {
-    if (filters.category.length > 0 && !filters.category.includes(profile.category)) {
-      return false;
-    }
-    if (filters.rating > 0 && profile.rating < filters.rating) {
-      return false;
-    }
-    if (filters.search && !profile.name.toLowerCase().includes(filters.search.toLowerCase())) {
-      return false;
-    }
-    return true;
-  });
+  // Calculate distance if user location is available
+  const getDistance = (profile: Profile) => {
+    if (!filters.userLocation) return null;
+    
+    const R = 6371; // Earth's radius in km
+    const dLat = toRad(profile.coordinates.lat - filters.userLocation.lat);
+    const dLon = toRad(profile.coordinates.lng - filters.userLocation.lng);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(filters.userLocation.lat)) *
+        Math.cos(toRad(profile.coordinates.lat)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
 
   return (
-    <div className="w-full h-full overflow-y-auto bg-gray-50">
-      <div className="mx-auto max-w-5xl p-6">
-        {/* Results Header */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {filteredProfiles.length} Sonuç Bulundu
-          </h2>
-          <p className="text-gray-600">
-            {filters.location || 'Türkiye'} konumunda {filters.category.length > 0 ? filters.category.join(', ') : 'tüm spor dalları'}
-          </p>
-        </div>
-
-        {/* Results Grid */}
-        <div className="grid gap-6">
-          {filteredProfiles.map((profile) => (
+    <div className="flex-1 overflow-y-auto bg-gray-50">
+      <div className="p-4 space-y-3">
+        {/* Results List */}
+        {profiles.map((profile) => {
+          const distance = getDistance(profile);
+          const isHovered = hoveredProfileId === profile.id;
+          const isSelected = selectedProfileId === profile.id;
+          
+          return (
             <div
               key={profile.id}
-              className="bg-white rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all overflow-hidden"
+              onMouseEnter={() => setHoveredProfileId(profile.id)}
+              onMouseLeave={() => setHoveredProfileId(null)}
+              onClick={() => setSelectedProfileId(profile.id)}
+              className={`bg-white rounded-xl border-2 transition-all cursor-pointer ${
+                isSelected
+                  ? 'border-[#d6ff00] shadow-lg'
+                  : isHovered
+                  ? 'border-gray-400 shadow-md'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
             >
-              <div className="flex flex-col sm:flex-row">
+              <div className="flex gap-3 p-3">
                 {/* Image */}
-                <div className="relative sm:w-64 h-48 sm:h-auto bg-gray-100">
+                <div className="relative w-24 h-24 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
                   <ImageWithFallback
                     src={profile.coverImage}
                     alt={profile.name}
                     className="w-full h-full object-cover"
                   />
                   {profile.isPremium && (
-                    <div className="absolute top-3 left-3 px-3 py-1 bg-[#d6ff00] text-black rounded-full text-xs font-semibold">
+                    <div className="absolute top-1 left-1 px-2 py-0.5 bg-[#d6ff00] text-black rounded text-xs font-semibold">
                       Premium
                     </div>
                   )}
-                  <button
-                    onClick={() => toggleFavorite(profile.id)}
-                    className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all"
-                  >
-                    <Heart
-                      className={`h-5 w-5 transition-all ${
-                        favorites.includes(profile.id)
-                          ? 'fill-red-500 text-red-500 scale-110'
-                          : 'text-gray-700'
-                      }`}
-                    />
-                  </button>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <Link href={`/${profile.slug}`}>
-                        <h3 className="text-xl font-bold text-gray-900 hover:text-[#d6ff00] transition-colors mb-1">
-                          {profile.name}
-                        </h3>
-                      </Link>
-                      <p className="text-gray-600 mb-2">{profile.category}</p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          <span>{profile.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-semibold text-gray-900">{profile.rating}</span>
-                          <span>({profile.reviews} değerlendirme)</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-gray-700 mb-4 line-clamp-2">{profile.description}</p>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {profile.specialties?.slice(0, 3).map((specialty) => (
-                      <span
-                        key={specialty}
-                        className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs"
-                      >
-                        {specialty}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-3">
-                    <Link href={`/${profile.slug}`} className="flex-1">
-                      <Button className="w-full bg-[#d6ff00] text-black hover:bg-[#c5ee00] font-semibold">
-                        Profili Görüntüle
-                      </Button>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between mb-1">
+                    <Link href={`/${profile.slug}`} className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 hover:text-[#d6ff00] transition-colors truncate">
+                        {profile.name}
+                      </h3>
                     </Link>
-                    <Button variant="outline">Mesaj Gönder</Button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(profile.id);
+                      }}
+                      className="ml-2 flex-shrink-0"
+                    >
+                      <Heart
+                        className={`h-4 w-4 transition-all ${
+                          favorites.includes(profile.id)
+                            ? 'fill-red-500 text-red-500'
+                            : 'text-gray-400 hover:text-red-500'
+                        }`}
+                      />
+                    </button>
                   </div>
+
+                  <p className="text-sm text-gray-600 mb-2">{profile.category}</p>
+
+                  <div className="flex items-center gap-3 text-xs text-gray-600 mb-2">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span className="font-semibold text-gray-900">{profile.rating}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      <span className="truncate">{profile.location.split(',')[0]}</span>
+                    </div>
+                    {distance && (
+                      <div className="flex items-center gap-1 text-[#d6ff00] font-semibold">
+                        <Navigation className="h-3 w-3" />
+                        <span>{distance.toFixed(1)} km</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-gray-700 line-clamp-2">{profile.description}</p>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Load More */}
-        {filteredProfiles.length > 0 && (
-          <div className="mt-8 text-center">
-            <Button variant="outline" size="lg">
-              Daha Fazla Yükle
-            </Button>
-          </div>
-        )}
+          );
+        })}
 
         {/* No Results */}
-        {filteredProfiles.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <MapPin className="h-12 w-12 text-gray-400" />
+        {profiles.length === 0 && (
+          <div className="text-center py-12 px-4">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <MapPin className="h-8 w-8 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Sonuç Bulunamadı</h3>
-            <p className="text-gray-600 mb-6">
-              Arama kriterlerinize uygun profil bulunamadı. Filtreleri değiştirmeyi deneyin.
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Sonuç Bulunamadı</h3>
+            <p className="text-sm text-gray-600">
+              Filtreleri değiştirmeyi deneyin
             </p>
-            <Button variant="outline">Filtreleri Temizle</Button>
           </div>
         )}
       </div>
     </div>
   );
+}
+
+function toRad(degrees: number): number {
+  return degrees * (Math.PI / 180);
 }
