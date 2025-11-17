@@ -116,6 +116,10 @@ export function MapView({
         zoom={mapZoom}
         style={{ height: '100%', width: '100%' }}
         className="z-0"
+        scrollWheelZoom={true}
+        whenCreated={(map) => {
+          // Map instance created
+        }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
