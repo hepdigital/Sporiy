@@ -107,7 +107,7 @@ export function ListView({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-1">
                     <Link href={`/${profile.slug}`} className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 hover:text-[#d6ff00] transition-colors truncate">
+                      <h3 className="font-semibold text-gray-900 hover:text-gray-700 transition-colors truncate">
                         {profile.name}
                       </h3>
                     </Link>
@@ -140,7 +140,7 @@ export function ListView({
                       <span className="truncate">{profile.location.split(',')[0]}</span>
                     </div>
                     {distance && (
-                      <div className="flex items-center gap-1 text-[#d6ff00] font-semibold">
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-full font-medium text-xs" style={{ backgroundColor: 'color-mix(in oklab, #d6ff00 10%, transparent)', color: '#000' }}>
                         <Navigation className="h-3 w-3" />
                         <span>{distance.toFixed(1)} km</span>
                       </div>

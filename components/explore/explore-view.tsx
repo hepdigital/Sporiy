@@ -30,8 +30,9 @@ const initialFilters: FilterState = {
 
 export function ExploreView() {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true); // Filtreler başlangıçta açık
   const [hoveredProfileId, setHoveredProfileId] = useState<number | null>(null);
+  const [handleUseLocation, setHandleUseLocation] = useState<(() => void) | null>(null);
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
@@ -41,6 +42,7 @@ export function ExploreView() {
         setFilters={setFilters}
         showFilters={showFilters}
         setShowFilters={setShowFilters}
+        onUseCurrentLocation={() => handleUseLocation && handleUseLocation()}
       />
 
       {/* Split View: List + Map */}
@@ -51,6 +53,7 @@ export function ExploreView() {
         setShowFilters={setShowFilters}
         hoveredProfileId={hoveredProfileId}
         setHoveredProfileId={setHoveredProfileId}
+        setHandleUseLocation={setHandleUseLocation}
       />
     </div>
   );

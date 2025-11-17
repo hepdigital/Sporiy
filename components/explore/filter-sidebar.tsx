@@ -50,8 +50,8 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
   };
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
-      <div className="p-6">
+    <div className="w-80 bg-white border-r border-gray-200 flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Filtreler</h2>
@@ -92,7 +92,7 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
                   type="checkbox"
                   checked={filters.category.includes(category)}
                   onChange={() => toggleCategory(category)}
-                  className="w-4 h-4 text-[#d6ff00] border-gray-300 rounded focus:ring-[#d6ff00]"
+                  className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black accent-black"
                 />
                 <span className="text-sm text-gray-700">{category}</span>
               </label>
@@ -114,7 +114,7 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
                   name="rating"
                   checked={filters.rating === rating}
                   onChange={() => setFilters({ ...filters, rating })}
-                  className="w-4 h-4 text-[#d6ff00] border-gray-300 focus:ring-[#d6ff00]"
+                  className="w-4 h-4 text-black border-gray-300 focus:ring-black accent-black"
                 />
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -188,7 +188,7 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
                   name="availability"
                   checked={filters.availability === option.value}
                   onChange={() => setFilters({ ...filters, availability: option.value })}
-                  className="w-4 h-4 text-[#d6ff00] border-gray-300 focus:ring-[#d6ff00]"
+                  className="w-4 h-4 text-black border-gray-300 focus:ring-black accent-black"
                 />
                 <span className="text-sm text-gray-700">{option.label}</span>
               </label>
@@ -200,7 +200,7 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
         <Button
           variant="outline"
           onClick={resetFilters}
-          className="w-full"
+          className="w-full mb-4"
         >
           Filtreleri Temizle
         </Button>

@@ -16,6 +16,7 @@ type Props = {
   setShowFilters: (show: boolean) => void;
   hoveredProfileId: number | null;
   setHoveredProfileId: (id: number | null) => void;
+  setHandleUseLocation: (handler: () => void) => void;
 };
 
 export function SplitView({ 
@@ -24,7 +25,8 @@ export function SplitView({
   showFilters, 
   setShowFilters,
   hoveredProfileId,
-  setHoveredProfileId 
+  setHoveredProfileId,
+  setHandleUseLocation
 }: Props) {
   const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -91,6 +93,11 @@ export function SplitView({
     );
   };
 
+  // Set handler for parent component
+  useEffect(() => {
+    setHandleUseLocation(() => handleUseCurrentLocation);
+  }, [filters]);
+
   return (
     <div className="flex-1 flex overflow-hidden relative">
       {/* Filter Sidebar (Collapsible) */}
@@ -118,10 +125,10 @@ export function SplitView({
                 variant={filters.useCurrentLocation ? 'default' : 'outline'}
                 onClick={handleUseCurrentLocation}
                 disabled={isLoadingLocation}
-                className={filters.useCurrentLocation ? 'bg-[#d6ff00] text-black hover:bg-[#c5ee00]' : ''}
+                className={`font-semibold ${filters.useCurrentLocation ? 'bg-[#d6ff00] text-black hover:bg-[#c5ee00] border-[#d6ff00]' : 'border-2 border-gray-300 hover:border-[#d6ff00] hover:text-[#d6ff00]'}`}
               >
                 <Navigation className={`h-4 w-4 mr-2 ${isLoadingLocation ? 'animate-spin' : ''}`} />
-                {isLoadingLocation ? 'Konum Alınıyor...' : 'Mevcut Konumum'}
+                {isLoadingLocation ? 'Konum Alınıyor...' : filters.useCurrentLocation ? 'Konumunuz Kullanılıyor' : 'Mevcut Konumum'}
               </Button>
             </div>
             {filters.useCurrentLocation && (
