@@ -48,7 +48,7 @@ export function QASection({ profile }: { profile: any }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Soru & Cevap</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mt-5">Soru & Cevap</h2>
         <Button
           onClick={() => setShowAskForm(!showAskForm)}
           className="gap-2 bg-[#d6ff00] text-black hover:bg-[#c5ee00]"

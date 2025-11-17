@@ -19,6 +19,7 @@ type Props = {
   setHandleUseLocation: (handler: () => void) => void;
   showMapModal: boolean;
   setShowMapModal: (show: boolean) => void;
+  categoryLocked?: boolean;
 };
 
 export function SplitView({ 
@@ -30,7 +31,8 @@ export function SplitView({
   setHoveredProfileId,
   setHandleUseLocation,
   showMapModal,
-  setShowMapModal
+  setShowMapModal,
+  categoryLocked = false
 }: Props) {
   const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -118,6 +120,7 @@ export function SplitView({
               filters={filters} 
               setFilters={setFilters}
               onClose={() => setShowFilters(false)}
+              categoryLocked={categoryLocked}
             />
           </div>
         </>

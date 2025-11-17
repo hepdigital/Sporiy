@@ -52,7 +52,7 @@ export function ReviewsSection({ profile }: { profile: any }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Değerlendirmeler</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mt-5">Değerlendirmeler</h2>
         <Button variant="outline" size="sm">
           Değerlendirme Yaz
         </Button>

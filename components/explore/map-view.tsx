@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { FilterState } from './explore-view';
-import { mockProfiles } from '@/lib/mock-data';
 
 // Leaflet'i client-side only olarak yükle
 const MapContainer = dynamic(
@@ -62,7 +61,7 @@ export function MapView({
   const [isMounted, setIsMounted] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([39.9334, 32.8597]);
   const [mapZoom, setMapZoom] = useState(6);
-  const [markerRefs, setMarkerRefs] = useState<Map<number, any>>(new Map());
+  const markerRefs = useRef<Map<number, any>>(new Map());
 
   useEffect(() => {
     setIsMounted(true);
@@ -90,13 +89,13 @@ export function MapView({
 
   // Open popup on hover
   useEffect(() => {
-    if (hoveredProfileId && markerRefs.has(hoveredProfileId)) {
-      const marker = markerRefs.get(hoveredProfileId);
+    if (hoveredProfileId && markerRefs.current.has(hoveredProfileId)) {
+      const marker = markerRefs.current.get(hoveredProfileId);
       if (marker) {
         marker.openPopup();
       }
     }
-  }, [hoveredProfileId, markerRefs]);
+  }, [hoveredProfileId]);
 
   if (!isMounted) {
     return (
@@ -117,9 +116,6 @@ export function MapView({
         style={{ height: '100%', width: '100%' }}
         className="z-0"
         scrollWheelZoom={true}
-        whenCreated={(map) => {
-          // Map instance created
-        }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -141,16 +137,15 @@ export function MapView({
 
         {/* Profile Markers */}
         {profiles.map((profile) => {
-          const isHovered = hoveredProfileId === profile.id;
-          const isSelected = selectedProfileId === profile.id;
-          
           return (
             <Marker
               key={profile.id}
               position={[profile.coordinates.lat, profile.coordinates.lng]}
               ref={(ref) => {
                 if (ref) {
-                  setMarkerRefs(prev => new Map(prev).set(profile.id, ref));
+                  markerRefs.current.set(profile.id, ref);
+                } else {
+                  markerRefs.current.delete(profile.id);
                 }
               }}
               eventHandlers={{

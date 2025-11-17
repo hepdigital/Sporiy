@@ -12,9 +12,10 @@ type Props = {
   showFilters: boolean;
   setShowFilters: (show: boolean) => void;
   onUseCurrentLocation: () => void;
+  categoryLocked?: boolean;
 };
 
-export function SearchHeader({ filters, setFilters, showFilters, setShowFilters, onUseCurrentLocation }: Props) {
+export function SearchHeader({ filters, setFilters, showFilters, setShowFilters, onUseCurrentLocation, categoryLocked = false }: Props) {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   const handleLocationClick = () => {

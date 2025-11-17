@@ -1,5 +1,10 @@
+'use client';
+
+import { useState } from 'react';
 import { Calendar, Users, Clock, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { CourseBookingModal } from './course-booking-modal';
+import { CourseDetailsModal } from './course-details-modal';
 
 const mockCourses = [
   {
@@ -12,6 +17,7 @@ const mockCourses = [
     capacity: '12 Kişi',
     enrolled: 8,
     level: 'Başlangıç',
+    type: 'Grup',
     startDate: '15 Mart 2025',
   },
   {
@@ -24,6 +30,7 @@ const mockCourses = [
     capacity: '8 Kişi',
     enrolled: 6,
     level: 'İleri',
+    type: 'Grup',
     startDate: '20 Mart 2025',
   },
   {
@@ -36,19 +43,38 @@ const mockCourses = [
     capacity: '1 Kişi',
     enrolled: 0,
     level: 'Tüm Seviyeler',
+    type: 'Bireysel',
     startDate: 'Hemen Başla',
   },
 ];
 
 export function CoursesSection({ profile }: { profile: any }) {
+  const [bookingModal, setBookingModal] = useState<{ isOpen: boolean; course: any | null }>({ 
+    isOpen: false, 
+    course: null 
+  });
+  const [detailsModal, setDetailsModal] = useState<{ isOpen: boolean; course: any | null }>({ 
+    isOpen: false, 
+    course: null 
+  });
+
+  const handleBooking = (course: any) => {
+    setBookingModal({ isOpen: true, course });
+  };
+
+  const handleDetails = (course: any) => {
+    setDetailsModal({ isOpen: true, course });
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Açılan Kurslar</h2>
-        <Button variant="outline" size="sm">
-          Tümünü Gör
-        </Button>
-      </div>
+    <>
+      <div id="courses-section" className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 scroll-mt-24">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mt-5">Açılan Kurslar</h2>
+          <Button variant="outline" size="sm">
+            Tümünü Gör
+          </Button>
+        </div>
 
       <div className="space-y-6">
         {mockCourses.map((course) => (
@@ -58,10 +84,17 @@ export function CoursesSection({ profile }: { profile: any }) {
           >
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <h3 className="text-xl font-semibold text-gray-900">{course.title}</h3>
                   <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
                     {course.level}
+                  </span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    course.type === 'Grup' 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'bg-purple-100 text-purple-700'
+                  }`}>
+                    {course.type}
                   </span>
                 </div>
                 <p className="text-gray-600 mb-4">{course.description}</p>
@@ -102,10 +135,17 @@ export function CoursesSection({ profile }: { profile: any }) {
             </div>
 
             <div className="flex gap-3">
-              <Button className="flex-1 bg-[#d6ff00] text-black hover:bg-[#c5ee00] font-semibold">
+              <Button 
+                onClick={() => handleBooking(course)}
+                className="flex-1 bg-[#d6ff00] text-black hover:bg-[#c5ee00] font-semibold"
+              >
                 Kayıt Ol
               </Button>
-              <Button variant="outline" className="flex-1">
+              <Button 
+                variant="outline" 
+                onClick={() => handleDetails(course)}
+                className="flex-1 hover:bg-black hover:text-white hover:border-black transition-colors"
+              >
                 Detayları Gör
               </Button>
             </div>
@@ -113,5 +153,24 @@ export function CoursesSection({ profile }: { profile: any }) {
         ))}
       </div>
     </div>
+
+    {/* Modals */}
+    <CourseBookingModal
+      isOpen={bookingModal.isOpen}
+      onClose={() => setBookingModal({ isOpen: false, course: null })}
+      course={bookingModal.course}
+      trainerName={profile.name}
+    />
+
+    <CourseDetailsModal
+      isOpen={detailsModal.isOpen}
+      onClose={() => setDetailsModal({ isOpen: false, course: null })}
+      course={detailsModal.course}
+      onBooking={() => {
+        setDetailsModal({ isOpen: false, course: null });
+        setBookingModal({ isOpen: true, course: detailsModal.course });
+      }}
+    />
+  </>
   );
 }

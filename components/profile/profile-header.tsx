@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ImageWithFallback } from '@/components/image-with-fallback';
+import { MessageModal } from './message-modal';
+import { ReportModal } from './report-modal';
+import { ShareModal } from '@/components/panel/social/share-modal';
 import { 
   Heart, 
   Share2, 
@@ -14,7 +16,8 @@ import {
   Phone,
   Mail,
   Globe,
-  Flag
+  Flag,
+  Users
 } from 'lucide-react';
 
 type Profile = {
@@ -27,11 +30,17 @@ type Profile = {
   avatar: string;
   isPremium?: boolean;
   type: 'trainer' | 'club';
+  phone?: string;
+  email?: string;
+  website?: string;
 };
 
 export function ProfileHeader({ profile }: { profile: Profile }) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [messageModal, setMessageModal] = useState(false);
+  const [reportModal, setReportModal] = useState(false);
+  const [shareModal, setShareModal] = useState(false);
 
   return (
     <div className="relative bg-white border-b border-gray-200">
@@ -117,12 +126,22 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
                     <span className="hidden sm:inline">Favorilere Ekle</span>
                   </Button>
 
-                  <Button size="lg" variant="outline" className="gap-2">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="gap-2"
+                    onClick={() => setShareModal(true)}
+                  >
                     <Share2 className="h-5 w-5" />
                     <span className="hidden sm:inline">Paylaş</span>
                   </Button>
 
-                  <Button size="lg" variant="ghost">
+                  <Button 
+                    size="lg" 
+                    variant="ghost"
+                    onClick={() => setReportModal(true)}
+                    title="Profili Bildir"
+                  >
                     <Flag className="h-5 w-5" />
                   </Button>
                 </div>
@@ -132,25 +151,60 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 
           {/* Quick Actions */}
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2 hover:bg-black hover:text-white hover:border-black transition-colors"
+              onClick={() => setMessageModal(true)}
+            >
               <MessageCircle className="h-4 w-4" />
               Mesaj Gönder
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2 hover:bg-black hover:text-white hover:border-black transition-colors"
+              onClick={() => window.open(`tel:${profile.phone}`)}
+            >
               <Phone className="h-4 w-4" />
               Telefon
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2 hover:bg-black hover:text-white hover:border-black transition-colors"
+              onClick={() => window.open(`mailto:${profile.email}`)}
+            >
               <Mail className="h-4 w-4" />
               E-posta
             </Button>
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2 hover:bg-black hover:text-white hover:border-black transition-colors"
+              onClick={() => window.open(`https://${profile.website}`, '_blank')}
+            >
               <Globe className="h-4 w-4" />
               Website
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <MessageModal
+        isOpen={messageModal}
+        onClose={() => setMessageModal(false)}
+        recipientName={profile.name}
+      />
+
+      <ReportModal
+        isOpen={reportModal}
+        onClose={() => setReportModal(false)}
+        profileName={profile.name}
+      />
+
+      <ShareModal
+        isOpen={shareModal}
+        onClose={() => setShareModal(false)}
+        postId={0}
+      />
     </div>
   );
 }

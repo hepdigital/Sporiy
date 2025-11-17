@@ -1,17 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { Waves, Ship, Anchor, Trophy, Fish, Users, Activity, Target } from 'lucide-react';
+import { 
+  SwimmingIcon, 
+  CanoeIcon, 
+  RowingIcon, 
+  SailingIcon, 
+  WaterPoloIcon, 
+  DivingIcon, 
+  TriathlonIcon, 
+  PentathlonIcon 
+} from '@/components/icons/sport-icons';
 
 const categories = [
-  { name: 'Yüzme', icon: Waves, slug: 'yuzme' },
-  { name: 'Kano', icon: Ship, slug: 'kano' },
-  { name: 'Kürek', icon: Anchor, slug: 'kurek' },
-  { name: 'Yelken', icon: Activity, slug: 'yelken' },
-  { name: 'Sutopu', icon: Trophy, slug: 'sutopu' },
-  { name: 'Sualtı Sporları', icon: Fish, slug: 'sualti-sporlari' },
-  { name: 'Triatlon', icon: Users, slug: 'triatlon' },
-  { name: 'Modern Pentatlon', icon: Target, slug: 'modern-pentatlon' },
+  { name: 'Yüzme', icon: SwimmingIcon, slug: 'yuzme' },
+  { name: 'Kano', icon: CanoeIcon, slug: 'kano' },
+  { name: 'Kürek', icon: RowingIcon, slug: 'kurek' },
+  { name: 'Yelken', icon: SailingIcon, slug: 'yelken' },
+  { name: 'Sutopu', icon: WaterPoloIcon, slug: 'sutopu' },
+  { name: 'Sualtı Sporları', icon: DivingIcon, slug: 'sualti-sporlari' },
+  { name: 'Triatlon', icon: TriathlonIcon, slug: 'triatlon' },
+  { name: 'Modern Pentatlon', icon: PentathlonIcon, slug: 'modern-pentatlon' },
 ];
 
 export function Categories() {

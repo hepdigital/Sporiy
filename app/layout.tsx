@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { ConditionalLayout } from "@/components/conditional-layout";
+import { DevAuthToggle } from "@/components/dev-auth-toggle";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,9 +19,10 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body className={inter.className}>
-        <Header />
-        {children}
-        <Footer />
+        <ConditionalLayout>
+          {children}
+        </ConditionalLayout>
+        <DevAuthToggle />
       </body>
     </html>
   );

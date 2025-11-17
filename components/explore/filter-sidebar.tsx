@@ -3,16 +3,26 @@
 import { X, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FilterState } from './explore-view';
+import { 
+  SwimmingIcon, 
+  CanoeIcon, 
+  RowingIcon, 
+  SailingIcon, 
+  WaterPoloIcon, 
+  DivingIcon, 
+  TriathlonIcon, 
+  PentathlonIcon 
+} from '@/components/icons/sport-icons';
 
 const categories = [
-  'Yüzme',
-  'Kano',
-  'Kürek',
-  'Yelken',
-  'Sutopu',
-  'Sualtı Sporları',
-  'Triatlon',
-  'Modern Pentatlon',
+  { name: 'Yüzme', icon: SwimmingIcon },
+  { name: 'Kano', icon: CanoeIcon },
+  { name: 'Kürek', icon: RowingIcon },
+  { name: 'Yelken', icon: SailingIcon },
+  { name: 'Sutopu', icon: WaterPoloIcon },
+  { name: 'Sualtı Sporları', icon: DivingIcon },
+  { name: 'Triatlon', icon: TriathlonIcon },
+  { name: 'Modern Pentatlon', icon: PentathlonIcon },
 ];
 
 const sortOptions = [
@@ -27,10 +37,12 @@ type Props = {
   filters: FilterState;
   setFilters: (filters: FilterState) => void;
   onClose: () => void;
+  categoryLocked?: boolean;
 };
 
-export function FilterSidebar({ filters, setFilters, onClose }: Props) {
+export function FilterSidebar({ filters, setFilters, onClose, categoryLocked = false }: Props) {
   const toggleCategory = (category: string) => {
+    if (categoryLocked) return; // Don't allow category change if locked
     const newCategories = filters.category.includes(category)
       ? filters.category.filter((c) => c !== category)
       : [...filters.category, category];
@@ -41,11 +53,13 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
     setFilters({
       search: filters.search,
       location: filters.location,
-      category: [],
+      category: categoryLocked ? filters.category : [],
       priceRange: [0, 10000],
       rating: 0,
       availability: 'all',
       sortBy: 'relevance',
+      useCurrentLocation: filters.useCurrentLocation,
+      userLocation: filters.userLocation,
     });
   };
 
@@ -81,22 +95,34 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
 
         {/* Categories */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Spor Dalları</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-900">Spor Dalları</h3>
+            {categoryLocked && (
+              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Sabit</span>
+            )}
+          </div>
           <div className="space-y-2">
-            {categories.map((category) => (
-              <label
-                key={category}
-                className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
-              >
-                <input
-                  type="checkbox"
-                  checked={filters.category.includes(category)}
-                  onChange={() => toggleCategory(category)}
-                  className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black accent-black"
-                />
-                <span className="text-sm text-gray-700">{category}</span>
-              </label>
-            ))}
+            {categories.map((category) => {
+              const Icon = category.icon;
+              return (
+                <label
+                  key={category.name}
+                  className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${
+                    categoryLocked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-50 cursor-pointer'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={filters.category.includes(category.name)}
+                    onChange={() => toggleCategory(category.name)}
+                    disabled={categoryLocked}
+                    className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black accent-black disabled:opacity-50"
+                  />
+                  <Icon className="h-4 w-4 text-gray-600 flex-shrink-0" />
+                  <span className="text-sm text-gray-700">{category.name}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
