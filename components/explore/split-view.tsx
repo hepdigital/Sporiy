@@ -104,19 +104,27 @@ export function SplitView({
 
   return (
     <div className="flex-1 flex overflow-hidden relative">
-      {/* Filter Sidebar (Collapsible) */}
+      {/* Filter Sidebar - Desktop: Slide, Mobile: Modal */}
       {showFilters && (
-        <div className="absolute left-0 top-0 bottom-0 z-20 w-80 bg-white shadow-xl">
-          <FilterSidebar 
-            filters={filters} 
-            setFilters={setFilters}
-            onClose={() => setShowFilters(false)}
+        <>
+          {/* Backdrop - Mobile only */}
+          <div 
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            onClick={() => setShowFilters(false)}
           />
-        </div>
+          {/* Sidebar */}
+          <div className="fixed lg:absolute left-0 top-0 bottom-0 z-40 w-80 bg-white shadow-xl">
+            <FilterSidebar 
+              filters={filters} 
+              setFilters={setFilters}
+              onClose={() => setShowFilters(false)}
+            />
+          </div>
+        </>
       )}
 
       {/* List View - Left Side */}
-      <div className={`${showFilters ? 'ml-80' : ''} w-full lg:w-2/5 border-r border-gray-200 overflow-hidden transition-all`}>
+      <div className={`${showFilters ? 'lg:ml-80' : ''} w-full lg:w-2/5 border-r border-gray-200 overflow-hidden transition-all`}>
         <div className="h-full flex flex-col">
           {/* Results Header */}
           <div className="p-4 bg-white border-b border-gray-200">

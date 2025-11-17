@@ -62,6 +62,7 @@ export function MapView({
   const [isMounted, setIsMounted] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([39.9334, 32.8597]);
   const [mapZoom, setMapZoom] = useState(6);
+  const [markerRefs, setMarkerRefs] = useState<Map<number, any>>(new Map());
 
   useEffect(() => {
     setIsMounted(true);
@@ -86,6 +87,16 @@ export function MapView({
       }
     }
   }, [hoveredProfileId, selectedProfileId, profiles]);
+
+  // Open popup on hover
+  useEffect(() => {
+    if (hoveredProfileId && markerRefs.has(hoveredProfileId)) {
+      const marker = markerRefs.get(hoveredProfileId);
+      if (marker) {
+        marker.openPopup();
+      }
+    }
+  }, [hoveredProfileId, markerRefs]);
 
   if (!isMounted) {
     return (
@@ -133,6 +144,11 @@ export function MapView({
             <Marker
               key={profile.id}
               position={[profile.coordinates.lat, profile.coordinates.lng]}
+              ref={(ref) => {
+                if (ref) {
+                  setMarkerRefs(prev => new Map(prev).set(profile.id, ref));
+                }
+              }}
               eventHandlers={{
                 mouseover: () => setHoveredProfileId(profile.id),
                 mouseout: () => setHoveredProfileId(null),

@@ -132,22 +132,24 @@ export function ListView({
 
                   <p className="text-sm text-gray-600 mb-2">{profile.category}</p>
 
-                  <div className="flex items-center flex-wrap gap-2 text-xs text-gray-600 mb-2">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold text-gray-900">{profile.rating}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      <span className="truncate">{profile.location.split(',')[0]}</span>
-                    </div>
-                    {distance && (
-                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-full font-medium text-xs" style={{ backgroundColor: 'color-mix(in oklab, #d6ff00 10%, transparent)', color: '#000' }}>
-                        <Navigation className="h-3 w-3" />
-                        <span>{distance.toFixed(1)} km</span>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center flex-wrap gap-2 text-xs text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        <span className="font-semibold text-gray-900">{profile.rating}</span>
                       </div>
-                    )}
-                    <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full font-semibold text-xs text-gray-900">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        <span className="truncate">{profile.location.split(',')[0]}</span>
+                      </div>
+                      {distance && (
+                        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full font-medium text-xs" style={{ backgroundColor: 'color-mix(in oklab, #d6ff00 10%, transparent)', color: '#000' }}>
+                          <Navigation className="h-3 w-3" />
+                          <span>{distance.toFixed(1)} km</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 px-3 py-1 bg-black text-white rounded-lg font-bold text-sm flex-shrink-0">
                       <span>2.500 ₺</span>
                     </div>
                   </div>
