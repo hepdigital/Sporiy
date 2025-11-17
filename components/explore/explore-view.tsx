@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SplitView } from './split-view';
 import { SearchHeader } from './search-header';
 
@@ -30,11 +30,17 @@ const initialFilters: FilterState = {
 
 export function ExploreView() {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
-  // Filtreler desktop'ta açık, mobilde kapalı
-  const [showFilters, setShowFilters] = useState(typeof window !== 'undefined' && window.innerWidth >= 1024);
+  const [showFilters, setShowFilters] = useState(false);
   const [hoveredProfileId, setHoveredProfileId] = useState<number | null>(null);
   const [handleUseLocation, setHandleUseLocation] = useState<(() => void) | null>(null);
   const [showMapModal, setShowMapModal] = useState(false);
+
+  // Set initial filter state after mount (client-side only)
+  useEffect(() => {
+    if (window.innerWidth >= 1024) {
+      setShowFilters(true);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
