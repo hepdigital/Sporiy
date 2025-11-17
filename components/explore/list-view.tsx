@@ -75,12 +75,13 @@ export function ListView({
           const isSelected = selectedProfileId === profile.id;
           
           return (
-            <div
+            <Link
               key={profile.id}
+              href={`/${profile.slug}`}
               onMouseEnter={() => setHoveredProfileId(profile.id)}
               onMouseLeave={() => setHoveredProfileId(null)}
               onClick={() => setSelectedProfileId(profile.id)}
-              className={`bg-white rounded-xl border-2 transition-all cursor-pointer ${
+              className={`block bg-white rounded-xl border-2 transition-all cursor-pointer ${
                 isSelected
                   ? 'border-[#d6ff00] shadow-lg'
                   : isHovered
@@ -106,13 +107,14 @@ export function ListView({
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-1">
-                    <Link href={`/${profile.slug}`} className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-gray-900 hover:text-gray-700 transition-colors truncate">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 truncate">
                         {profile.name}
                       </h3>
-                    </Link>
+                    </div>
                     <button
                       onClick={(e) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         toggleFavorite(profile.id);
                       }}
@@ -130,7 +132,7 @@ export function ListView({
 
                   <p className="text-sm text-gray-600 mb-2">{profile.category}</p>
 
-                  <div className="flex items-center gap-3 text-xs text-gray-600 mb-2">
+                  <div className="flex items-center flex-wrap gap-2 text-xs text-gray-600 mb-2">
                     <div className="flex items-center gap-1">
                       <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                       <span className="font-semibold text-gray-900">{profile.rating}</span>
@@ -145,12 +147,15 @@ export function ListView({
                         <span>{distance.toFixed(1)} km</span>
                       </div>
                     )}
+                    <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded-full font-semibold text-xs text-gray-900">
+                      <span>2.500 ₺</span>
+                    </div>
                   </div>
 
                   <p className="text-xs text-gray-700 line-clamp-2">{profile.description}</p>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
 

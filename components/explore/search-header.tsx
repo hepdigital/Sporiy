@@ -43,13 +43,18 @@ export function SearchHeader({ filters, setFilters, showFilters, setShowFilters,
             <button
               onClick={handleLocationClick}
               disabled={isLoadingLocation}
-              className="flex-shrink-0 hover:text-[#d6ff00] transition-colors disabled:opacity-50"
+              className="flex-shrink-0 relative disabled:opacity-50"
               title="Mevcut konumumu kullan"
             >
               {filters.useCurrentLocation ? (
-                <Navigation className={`h-5 w-5 text-[#d6ff00] ${isLoadingLocation ? 'animate-spin' : ''}`} />
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[#d6ff00] rounded-full animate-ping opacity-75" />
+                  <div className="relative w-8 h-8 bg-[#d6ff00] rounded-full flex items-center justify-center">
+                    <Navigation className={`h-4 w-4 text-black ${isLoadingLocation ? 'animate-spin' : ''}`} />
+                  </div>
+                </div>
               ) : (
-                <MapPin className={`h-5 w-5 text-gray-400 ${isLoadingLocation ? 'animate-spin' : ''}`} />
+                <MapPin className={`h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors ${isLoadingLocation ? 'animate-spin' : ''}`} />
               )}
             </button>
             <Input

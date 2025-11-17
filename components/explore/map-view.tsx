@@ -75,16 +75,17 @@ export function MapView({
     }
   }, [filters.userLocation]);
 
-  // Center map on hovered profile
+  // Center map on hovered or selected profile
   useEffect(() => {
-    if (hoveredProfileId) {
-      const profile = profiles.find(p => p.id === hoveredProfileId);
+    const profileId = selectedProfileId || hoveredProfileId;
+    if (profileId) {
+      const profile = profiles.find(p => p.id === profileId);
       if (profile) {
         setMapCenter([profile.coordinates.lat, profile.coordinates.lng]);
-        setMapZoom(12);
+        setMapZoom(selectedProfileId ? 14 : 12);
       }
     }
-  }, [hoveredProfileId, profiles]);
+  }, [hoveredProfileId, selectedProfileId, profiles]);
 
   if (!isMounted) {
     return (
@@ -135,7 +136,10 @@ export function MapView({
               eventHandlers={{
                 mouseover: () => setHoveredProfileId(profile.id),
                 mouseout: () => setHoveredProfileId(null),
-                click: () => setSelectedProfileId(profile.id),
+                click: () => {
+                  setSelectedProfileId(profile.id);
+                  setHoveredProfileId(profile.id);
+                },
               }}
             >
               <Popup>

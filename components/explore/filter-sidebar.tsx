@@ -136,7 +136,7 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
         <div className="mb-6">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Fiyat Aralığı</h3>
           <div className="space-y-3">
-            <div className="flex items-center gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <input
                 type="number"
                 placeholder="Min"
@@ -147,9 +147,8 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
                     priceRange: [parseInt(e.target.value) || 0, filters.priceRange[1]],
                   })
                 }
-                className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d6ff00] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
               />
-              <span className="text-gray-500">-</span>
               <input
                 type="number"
                 placeholder="Max"
@@ -160,11 +159,11 @@ export function FilterSidebar({ filters, setFilters, onClose }: Props) {
                     priceRange: [filters.priceRange[0], parseInt(e.target.value) || 10000],
                   })
                 }
-                className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#d6ff00] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
               />
             </div>
             <div className="text-xs text-gray-500">
-              {filters.priceRange[0]} ₺ - {filters.priceRange[1]} ₺
+              {filters.priceRange[0].toLocaleString('tr-TR')} ₺ - {filters.priceRange[1].toLocaleString('tr-TR')} ₺
             </div>
           </div>
         </div>

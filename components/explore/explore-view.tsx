@@ -30,9 +30,11 @@ const initialFilters: FilterState = {
 
 export function ExploreView() {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
-  const [showFilters, setShowFilters] = useState(true); // Filtreler başlangıçta açık
+  // Filtreler desktop'ta açık, mobilde kapalı
+  const [showFilters, setShowFilters] = useState(typeof window !== 'undefined' && window.innerWidth >= 1024);
   const [hoveredProfileId, setHoveredProfileId] = useState<number | null>(null);
   const [handleUseLocation, setHandleUseLocation] = useState<(() => void) | null>(null);
+  const [showMapModal, setShowMapModal] = useState(false);
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
@@ -54,6 +56,8 @@ export function ExploreView() {
         hoveredProfileId={hoveredProfileId}
         setHoveredProfileId={setHoveredProfileId}
         setHandleUseLocation={setHandleUseLocation}
+        showMapModal={showMapModal}
+        setShowMapModal={setShowMapModal}
       />
     </div>
   );
