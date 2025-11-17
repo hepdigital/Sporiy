@@ -150,7 +150,7 @@ export default function EventsPage() {
     }
 
     return result;
-  }, [filters, mockEvents]);
+  }, [filters]);
 
   const toggleQuickCategory = (category: string) => {
     if (category === 'Tümü') {

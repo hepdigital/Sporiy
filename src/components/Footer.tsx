@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Facebook, Instagram, Twitter, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 
 const footerLinks = {
@@ -54,12 +55,12 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
           {/* Brand Column */}
           <div className="col-span-2">
-            <a href="/" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
                 <span className="text-black">S</span>
               </div>
               <span className="text-white">sporiy</span>
-            </a>
+            </Link>
             <p className="text-gray-400 mb-6 text-sm max-w-xs">
               Spor kulüpleri, eğitmenler ve sporcuları bir araya getiren profesyonel platform.
             </p>

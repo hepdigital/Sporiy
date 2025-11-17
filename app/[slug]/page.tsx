@@ -9,8 +9,37 @@ import { LocationMap } from '@/components/profile/location-map';
 import { ReviewsSection } from '@/components/profile/reviews-section';
 import { QASection } from '@/components/profile/qa-section';
 
+type Profile = {
+  id: number;
+  type: 'trainer' | 'club';
+  name: string;
+  slug: string;
+  category: string;
+  location: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  rating: number;
+  reviews: number;
+  followers: number;
+  following?: number;
+  experience: string;
+  description: string;
+  bio: string;
+  coverImage: string;
+  avatar: string;
+  phone: string;
+  email: string;
+  website: string;
+  specialties: string[];
+  certifications: string[];
+  languages: string[];
+  isPremium: boolean;
+};
+
 // Mock data - Backend'den gelecek
-const profiles = {
+const profiles: Record<string, Profile> = {
   'umutdiner': {
     id: 2,
     type: 'trainer',

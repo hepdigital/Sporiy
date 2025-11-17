@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Menu, X, User, Search, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from './ui/button';
@@ -12,12 +13,12 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <span className="text-[#d6ff00]">S</span>
               </div>
               <span className="text-black">sporiy</span>
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}

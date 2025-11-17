@@ -479,7 +479,7 @@ export function SocialLanding() {
                 </div>
                 
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  "{testimonial.text}"
+                  &ldquo;{testimonial.text}&rdquo;
                 </p>
                 
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">

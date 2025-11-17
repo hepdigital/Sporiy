@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, User, Users, Building2, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -209,14 +210,14 @@ export function RegisterForm() {
           className="h-4 w-4 mt-0.5 text-black border-gray-300 rounded focus:ring-black accent-black"
         />
         <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-          <a href="/kullanim-kosullari" className="font-medium text-black hover:text-[#d6ff00]">
+          <Link href="/kullanim-kosullari" className="font-medium text-black hover:text-[#d6ff00]">
             Kullanım Koşulları
-          </a>
-          {' '}ve{' '}
-          <a href="/gizlilik-politikasi" className="font-medium text-black hover:text-[#d6ff00]">
+          </Link>{' '}
+          ve{' '}
+          <Link href="/gizlilik-politikasi" className="font-medium text-black hover:text-[#d6ff00]">
             Gizlilik Politikası
-          </a>
-          'nı okudum ve kabul ediyorum.
+          </Link>
+          &rsquo;nı okudum ve kabul ediyorum.
         </label>
       </div>
 

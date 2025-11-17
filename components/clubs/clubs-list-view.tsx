@@ -78,7 +78,7 @@ export function ClubsListView() {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4 mt-5">Spor Kulüpleri</h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Türkiye'nin en iyi su sporları kulüplerini keşfedin ve hemen üye olun
+              Türkiye&apos;nin en iyi su sporları kulüplerini keşfedin ve hemen üye olun
             </p>
           </div>
 

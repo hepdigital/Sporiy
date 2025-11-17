@@ -38,9 +38,9 @@ export function Stats() {
 
           <div className="relative">
             <div className="text-center mb-12">
-              <h2 className="mb-4 text-white">Türkiye'nin Büyüyen Spor Topluluğu</h2>
+              <h2 className="mb-4 text-white">Türkiye&apos;nin Büyüyen Spor Topluluğu</h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                Her gün binlerce sporcu ve eğitmen Sporiy'de buluşuyor
+                Her gün binlerce sporcu ve eğitmen Sporiy&apos;de buluşuyor
               </p>
             </div>
 

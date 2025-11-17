@@ -41,7 +41,7 @@ export function Hero() {
           </h1>
 
           <p className="mb-10 text-gray-300 max-w-2xl mx-auto">
-            Türkiye'nin en iyi spor kulüpleri ve eğitmenleriyle tanışın. 
+            Türkiye&apos;nin en iyi spor kulüpleri ve eğitmenleriyle tanışın. 
             Yüzme, kano, kürek, yelken ve daha fazlası için size özel dersleri keşfedin.
           </p>
 
