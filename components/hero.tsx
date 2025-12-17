@@ -1,13 +1,18 @@
 'use client';
 
-import { Search, MapPin } from 'lucide-react';
+import { Search, Navigation } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function Hero() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   const suggestions = [
     { icon: '🏊', text: `${searchQuery} Kulüpler` },
@@ -15,6 +20,43 @@ export function Hero() {
     { icon: '📚', text: `${searchQuery} Kurslar` },
     { icon: '⭐', text: `${searchQuery} Etkinlikler` },
   ];
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/arama?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleLocationClick = () => {
+    setIsLoadingLocation(true);
+    
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          setUseCurrentLocation(true);
+          setIsLoadingLocation(false);
+        },
+        (error) => {
+          console.error('Konum alınamadı:', error);
+          setIsLoadingLocation(false);
+          alert('Konum izni verilmedi veya konum alınamadı.');
+        }
+      );
+    } else {
+      setIsLoadingLocation(false);
+      alert('Tarayıcınız konum özelliğini desteklemiyor.');
+    }
+  };
 
   return (
     <section className="relative bg-black text-white overflow-hidden">
@@ -31,20 +73,19 @@ export function Hero() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full mb-6">
             <div className="w-2 h-2 bg-[#d6ff00] rounded-full animate-pulse" />
-            <span className="text-sm">Su Sporları Dünyasının Yeni Platformu</span>
+            <span className="text-sm">Spor Dünyasının Yeni Platformu</span>
           </div>
 
           {/* Heading */}
           <h1 className="mb-6 text-5xl sm:text-6xl lg:text-7xl font-bold">
-            <span className="block">Spor Tutkunuzu</span>
+            <span className="block">Şehrindeki Spor Dünyası</span>
             <span className="block">
-              <span className="text-[#d6ff00]">Profesyonellerle</span> Buluşturun
+              <span className="text-[#d6ff00]">Parmaklarının Ucunda!</span>
             </span>
           </h1>
 
           <p className="mb-10 text-xl text-gray-300 max-w-2xl mx-auto">
-            Türkiye&apos;nin en iyi spor kulüpleri ve eğitmenleriyle tanışın. 
-            Yüzme, kano, kürek, yelken ve daha fazlası için size özel dersleri keşfedin.
+            Kulüplerden eğitmenlere, kurslardan etkinliklere kadar tüm spor imkanları tek çatı altında!
           </p>
 
           {/* Search Bar */}
@@ -55,13 +96,14 @@ export function Hero() {
                   <Search className="h-5 w-5 text-gray-400 flex-shrink-0" />
                   <Input 
                     type="text" 
-                    placeholder="Spor dalı veya eğitmen ara..." 
+                    placeholder="Şehrini Yaz" 
                     className="border-0 bg-transparent p-0 focus-visible:ring-0 text-black placeholder:text-gray-500"
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
                       setShowSuggestions(e.target.value.length > 0);
                     }}
+                    onKeyPress={handleKeyPress}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   />
                 </div>
@@ -85,19 +127,42 @@ export function Hero() {
                   </div>
                 )}
               </div>
-              <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl sm:w-48">
-                <MapPin className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                <Input 
-                  type="text" 
-                  placeholder="Konum" 
-                  className="border-0 bg-transparent p-0 focus-visible:ring-0 text-black placeholder:text-gray-500"
-                />
-              </div>
-              <Button 
-                size="lg" 
-                className="bg-[#d6ff00] text-black hover:bg-[#c5ee00] rounded-xl px-8 font-semibold"
+
+              {/* Yakınımda Ara Button */}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={handleLocationClick}
+                disabled={isLoadingLocation}
+                className={`gap-2 rounded-xl font-semibold transition-all ${
+                  useCurrentLocation 
+                    ? 'bg-[#d6ff00] text-black border-[#d6ff00] hover:bg-[#c5ee00]' 
+                    : 'bg-white text-black border-gray-300 hover:bg-gray-50'
+                }`}
               >
-                Ara
+                {useCurrentLocation ? (
+                  <>
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-black rounded-full animate-ping opacity-20" />
+                      <Navigation className={`h-5 w-5 relative ${isLoadingLocation ? 'animate-spin' : ''}`} />
+                    </div>
+                    <span className="hidden sm:inline">Konumunuz Aktif</span>
+                  </>
+                ) : (
+                  <>
+                    <Navigation className={`h-5 w-5 ${isLoadingLocation ? 'animate-spin' : ''}`} />
+                    <span className="hidden sm:inline">Yakınımda Ara</span>
+                  </>
+                )}
+              </Button>
+
+              <Button 
+                size="lg"
+                onClick={handleSearch}
+                className="bg-[#d6ff00] text-black hover:bg-[#c5ee00] rounded-xl px-8 font-semibold gap-2"
+              >
+                <Search className="h-5 w-5" />
+                Keşfet
               </Button>
             </div>
           </div>

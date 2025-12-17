@@ -4,8 +4,7 @@ import { ProfileHeader } from '@/components/profile/profile-header';
 import { ProfileInfo } from '@/components/profile/profile-info';
 import { ProfileStats } from '@/components/profile/profile-stats';
 import { MediaGallery } from '@/components/profile/media-gallery';
-import { CoursesSection } from '@/components/profile/courses-section';
-import { LocationMap } from '@/components/profile/location-map';
+import { CoursesWithMap } from '@/components/profile/courses-with-map';
 import { ReviewsSection } from '@/components/profile/reviews-section';
 import { QASection } from '@/components/profile/qa-section';
 
@@ -128,20 +127,27 @@ export default async function ProfilePage({ params }: Props) {
       <ProfileHeader profile={profile} />
       
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Content */}
+        {/* Profile Info and Media */}
+        <div className="grid lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2 space-y-8">
             <ProfileInfo profile={profile} />
             <MediaGallery profileId={profile.id} />
-            <CoursesSection profile={profile} />
-            <ReviewsSection profile={profile} />
-            <QASection profile={profile} />
           </div>
-
-          {/* Right Column - Sidebar */}
           <div className="space-y-6">
             <ProfileStats profile={profile} />
-            <LocationMap profile={profile} />
+          </div>
+        </div>
+
+        {/* Courses with Map - Full Width */}
+        <div className="mb-8">
+          <CoursesWithMap profile={profile} />
+        </div>
+
+        {/* Reviews and QA */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <ReviewsSection profile={profile} />
+            <QASection profile={profile} />
           </div>
         </div>
       </div>

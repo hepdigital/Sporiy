@@ -27,15 +27,8 @@ import { EventRegistrationModal } from '@/components/events/event-registration-m
 import { EventCard } from '@/components/events/event-card';
 import { useAuth } from '@/lib/auth';
 import dynamic from 'next/dynamic';
+import { MapWrapper } from '@/components/map-wrapper';
 
-const MapContainer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.TileLayer),
-  { ssr: false }
-);
 const Marker = dynamic(
   () => import('react-leaflet').then((mod) => mod.Marker),
   { ssr: false }
@@ -289,18 +282,13 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
                   </div>
                 </div>
                 <div className="h-64 bg-gray-100 rounded-xl overflow-hidden">
-                  <MapContainer
+                  <MapWrapper
                     center={[event.coordinates.lat, event.coordinates.lng]}
                     zoom={14}
-                    style={{ height: '100%', width: '100%' }}
                     scrollWheelZoom={false}
                   >
-                    <TileLayer
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
                     <Marker position={[event.coordinates.lat, event.coordinates.lng]} />
-                  </MapContainer>
+                  </MapWrapper>
                 </div>
               </div>
             </div>

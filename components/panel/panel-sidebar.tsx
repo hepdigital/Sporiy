@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
@@ -106,11 +107,15 @@ export function PanelSidebar({ userType }: Props) {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-800">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-[#d6ff00] rounded-lg flex items-center justify-center">
-                <span className="text-black font-bold text-lg">S</span>
-              </div>
-              <span className="font-semibold text-lg">sporiy</span>
+            <Link href="/" className="flex items-center">
+              <Image 
+                src="/logo-white.svg" 
+                alt="Sporiy" 
+                width={150} 
+                height={50}
+                className="h-10 w-auto"
+                priority
+              />
             </Link>
             <button
               onClick={() => setIsMobileMenuOpen(false)}

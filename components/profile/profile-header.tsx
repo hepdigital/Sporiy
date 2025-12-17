@@ -44,41 +44,29 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 
   return (
     <div className="relative bg-white border-b border-gray-200">
-      {/* Cover Image */}
-      <div className="relative h-64 sm:h-80 lg:h-96 bg-gray-900">
-        <ImageWithFallback
-          src={profile.coverImage}
-          alt={profile.name}
-          className="w-full h-full object-cover opacity-90"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        
-        {/* Premium Badge */}
-        {profile.isPremium && (
-          <div className="absolute top-4 right-4 px-4 py-2 bg-[#d6ff00] text-black rounded-full text-sm font-semibold flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4" />
-            Premium Üye
-          </div>
-        )}
-      </div>
-
       {/* Profile Info */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative pb-6">
-          {/* Avatar */}
-          <div className="flex flex-col sm:flex-row sm:items-end sm:space-x-6">
-            <div className="relative -mt-16 sm:-mt-20">
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-2xl overflow-hidden border-4 border-white shadow-xl bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        <div className="relative">
+          {/* Avatar & Info */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6">
+            <div className="relative">
+              <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-2xl overflow-hidden border-4 border-gray-200 shadow-lg bg-white">
                 <ImageWithFallback
                   src={profile.avatar}
                   alt={profile.name}
                   className="w-full h-full object-cover"
                 />
+                {/* Premium Badge */}
+                {profile.isPremium && (
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#d6ff00] rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                    <CheckCircle2 className="h-5 w-5 text-black" />
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Name & Info */}
-            <div className="flex-1 mt-4 sm:mt-0 sm:pb-4">
+            <div className="flex-1 mt-6 sm:mt-0">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">

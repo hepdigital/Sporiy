@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Modal } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, Users, MapPin, CheckCircle2, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Clock, Users, CheckCircle2, AlertCircle, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 
 // Add scrollbar hide styles
 const scrollbarHideStyles = `
@@ -27,6 +27,19 @@ type Course = {
   enrolled: number;
   startDate: string;
   description: string;
+  location?: string;
+};
+
+type SelectedSlot = {
+  day?: number;
+  time: string;
+  selectedDays?: string[];
+  selectedDay?: string;
+  selectedTime?: string;
+  location?: string;
+  capacity?: number;
+  enrolled?: number;
+  groupId?: string;
 };
 
 type Props = {
@@ -34,15 +47,14 @@ type Props = {
   onClose: () => void;
   course: Course | null;
   trainerName: string;
+  selectedSlot?: SelectedSlot;
 };
 
-export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Props) {
+export function CourseBookingModal({ isOpen, onClose, course, trainerName, selectedSlot }: Props) {
   const [step, setStep] = useState(1);
   const [bookingData, setBookingData] = useState({
-    date: '',
-    time: '',
-    lessonType: '',
-    notes: '',
+    date: selectedSlot ? '' : '',
+    time: selectedSlot ? selectedSlot.time : '',
   });
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [isDragging, setIsDragging] = useState(false);
@@ -149,16 +161,11 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
 
   const handleSubmit = () => {
     // TODO: Submit booking
-    console.log('Booking submitted:', bookingData);
-    setStep(3); // Success step
+    console.log('Booking submitted:', { course, selectedSlot, bookingData });
+    setStep(2); // Success step
   };
 
-  const lessonTypes = [
-    'Temel Teknikler',
-    'İleri Seviye Antrenman',
-    'Yarışma Hazırlığı',
-    'Teknik Analiz',
-  ];
+
 
   return (
     <>
@@ -166,7 +173,7 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
       <Modal 
         isOpen={isOpen} 
         onClose={onClose} 
-        title={step === 3 ? 'Rezervasyon Onaylandı!' : course.title}
+        title={step === 2 ? 'Rezervasyon Onaylandı!' : course.title}
         size="lg"
       >
         {step === 1 && (
@@ -204,33 +211,70 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
 
           {/* Booking Form */}
           {isGroupCourse ? (
-            // Group Course - Simple Join Request
-            <div className="space-y-4">
+            // Group Course - Direct Booking
+            <div className="space-y-6">
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-blue-800">
                     <p className="font-medium mb-1">Grup Kursu</p>
-                    <p>Bu grup kursuna katılım talebiniz eğitmene iletilecektir. Onay sonrası ödeme bilgileri size gönderilecektir.</p>
+                    <p>Bu grup kursuna katılım talebiniz eğitmene iletilecektir.</p>
                   </div>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ek Notlar (İsteğe Bağlı)
-                </label>
-                <textarea
-                  value={bookingData.notes}
-                  onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
-                  placeholder="Deneyim seviyeniz, özel istekleriniz vb..."
-                  className="w-full h-24 px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#d6ff00] focus:border-transparent"
-                />
+              {/* Reservation Summary */}
+              <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+                <h3 className="font-semibold text-gray-900 mb-3">Rezervasyon Detayları</h3>
+                
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Kurs</span>
+                  <span className="font-medium text-gray-900">{course.title}</span>
+                </div>
+                
+                {selectedSlot && (
+                  <>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Gün</span>
+                      <span className="font-medium text-gray-900">
+                        {selectedSlot.selectedDays ? selectedSlot.selectedDays.join(' - ') : selectedSlot.selectedDay}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Saat</span>
+                      <span className="font-medium text-gray-900">{selectedSlot.selectedTime}</span>
+                    </div>
+                    {selectedSlot.location && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Konum</span>
+                        <span className="font-medium text-gray-900 flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          {selectedSlot.location}
+                        </span>
+                      </div>
+                    )}
+                    {selectedSlot.capacity && selectedSlot.enrolled !== undefined && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Grup Durumu</span>
+                        <span className="font-medium text-gray-900">
+                          {selectedSlot.enrolled}/{selectedSlot.capacity} Kişi ({selectedSlot.capacity - selectedSlot.enrolled} yer kaldı)
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )}
+                
+                <div className="pt-3 border-t border-gray-200">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-gray-900">Ücret</span>
+                    <span className="text-xl font-bold text-gray-900">{course.price}</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3">
                 <Button
-                  onClick={() => setStep(2)}
+                  onClick={handleSubmit}
                   className="flex-1 bg-[#d6ff00] text-black hover:bg-[#c5ee00]"
                 >
                   Katılım Talebi Gönder
@@ -241,93 +285,95 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
               </div>
             </div>
           ) : (
-            // Individual Course - Date/Time Selection with Availability
-            <div className="space-y-4">
+            // Individual Course - Direct Booking
+            <div className="space-y-6">
               <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-purple-800">
                     <p className="font-medium mb-1">Bireysel Ders</p>
-                    <p>Eğitmenin müsait olduğu tarih ve saati seçin. Rezervasyonunuz onaylandıktan sonra ödeme bilgileri gönderilecektir.</p>
+                    <p>Rezervasyon talebiniz eğitmene iletilecektir.</p>
                   </div>
                 </div>
               </div>
 
-              {/* Date Selector - Scrollable with Month Navigation */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Ders Tarihi Seçin *
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={goToPreviousMonth}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      type="button"
-                    >
-                      <ChevronLeft className="h-4 w-4 text-gray-600" />
-                    </button>
-                    <span className="text-sm font-semibold text-gray-900 min-w-[120px] text-center">
-                      {selectedMonth.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })}
-                    </span>
-                    <button
-                      onClick={goToNextMonth}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      type="button"
-                    >
-                      <ChevronRight className="h-4 w-4 text-gray-600" />
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="relative">
-                  {/* Gradient overlays for scroll indication */}
-                  <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-                  <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-                  
-                  <div 
-                    className={`flex gap-2 overflow-x-auto pb-2 scrollbar-hide ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-                    onMouseDown={handleMouseDown}
-                    onMouseMove={handleMouseMove}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    {generateAvailableDates().map((dateInfo) => (
+              {/* Date Selector - Only show if no slot pre-selected */}
+              {!selectedSlot && (
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Ders Tarihi Seçin *
+                    </label>
+                    <div className="flex items-center gap-2">
                       <button
-                        key={dateInfo.date}
-                        onClick={() => !isDragging && setBookingData({ ...bookingData, date: dateInfo.date, time: '' })}
-                        disabled={!dateInfo.available}
+                        onClick={goToPreviousMonth}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                         type="button"
-                        className={`flex-shrink-0 w-20 p-3 rounded-lg border-2 transition-all select-none ${
-                          bookingData.date === dateInfo.date
-                            ? 'border-[#d6ff00] bg-[#d6ff00]/10'
-                            : dateInfo.available
-                            ? 'border-gray-200 hover:border-gray-300 bg-white'
-                            : 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
-                        }`}
                       >
-                        <div className="text-center pointer-events-none">
-                          <div className="text-xs text-gray-500 mb-1">{dateInfo.dayName}</div>
-                          <div className="text-lg font-bold text-gray-900">{dateInfo.day}</div>
-                          {!dateInfo.available && !dateInfo.isPast && (
-                            <div className="text-xs text-red-500 mt-1">Dolu</div>
-                          )}
-                          {dateInfo.isPast && (
-                            <div className="text-xs text-gray-400 mt-1">Geçti</div>
-                          )}
-                        </div>
+                        <ChevronLeft className="h-4 w-4 text-gray-600" />
                       </button>
-                    ))}
+                      <span className="text-sm font-semibold text-gray-900 min-w-[120px] text-center">
+                        {selectedMonth.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' })}
+                      </span>
+                      <button
+                        onClick={goToNextMonth}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        type="button"
+                      >
+                        <ChevronRight className="h-4 w-4 text-gray-600" />
+                      </button>
+                    </div>
                   </div>
                   
-                  <p className="text-xs text-gray-500 mt-2 text-center">
-                    💡 Tarihleri kaydırmak için sürükleyin veya ok tuşlarını kullanın
-                  </p>
+                  <div className="relative">
+                    {/* Gradient overlays for scroll indication */}
+                    <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+                    <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+                    
+                    <div 
+                      className={`flex gap-2 overflow-x-auto pb-2 scrollbar-hide ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                      onMouseDown={handleMouseDown}
+                      onMouseMove={handleMouseMove}
+                      onMouseUp={handleMouseUp}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {generateAvailableDates().map((dateInfo) => (
+                        <button
+                          key={dateInfo.date}
+                          onClick={() => !isDragging && setBookingData({ ...bookingData, date: dateInfo.date, time: '' })}
+                          disabled={!dateInfo.available}
+                          type="button"
+                          className={`flex-shrink-0 w-20 p-3 rounded-lg border-2 transition-all select-none ${
+                            bookingData.date === dateInfo.date
+                              ? 'border-[#d6ff00] bg-[#d6ff00]/10'
+                              : dateInfo.available
+                              ? 'border-gray-200 hover:border-gray-300 bg-white'
+                              : 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
+                          }`}
+                        >
+                          <div className="text-center pointer-events-none">
+                            <div className="text-xs text-gray-500 mb-1">{dateInfo.dayName}</div>
+                            <div className="text-lg font-bold text-gray-900">{dateInfo.day}</div>
+                            {!dateInfo.available && !dateInfo.isPast && (
+                              <div className="text-xs text-red-500 mt-1">Dolu</div>
+                            )}
+                            {dateInfo.isPast && (
+                              <div className="text-xs text-gray-400 mt-1">Geçti</div>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                    
+                    <p className="text-xs text-gray-500 mt-2 text-center">
+                      💡 Tarihleri kaydırmak için sürükleyin veya ok tuşlarını kullanın
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Time Slots */}
-              {bookingData.date && (
+              {/* Time Slots - Only show if no slot pre-selected and date is selected */}
+              {!selectedSlot && bookingData.date && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
                     Ders Saati Seçin *
@@ -356,53 +402,64 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ders Türü *
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {lessonTypes.map((type) => (
-                    <label
-                      key={type}
-                      className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition-colors ${
-                        bookingData.lessonType === type
-                          ? 'border-[#d6ff00] bg-[#d6ff00]/10'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="lessonType"
-                        value={type}
-                        checked={bookingData.lessonType === type}
-                        onChange={(e) => setBookingData({ ...bookingData, lessonType: e.target.value })}
-                        className="w-4 h-4 text-[#d6ff00] focus:ring-[#d6ff00]"
-                      />
-                      <span className="text-sm text-gray-700">{type}</span>
-                    </label>
-                  ))}
+              {/* Reservation Summary for Individual Course */}
+              {(selectedSlot || (bookingData.date && bookingData.time)) && (
+                <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+                  <h3 className="font-semibold text-gray-900 mb-3">Rezervasyon Detayları</h3>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Kurs</span>
+                    <span className="font-medium text-gray-900">{course.title}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Tarih</span>
+                    <span className="font-medium text-gray-900">
+                      {selectedSlot 
+                        ? (selectedSlot.day !== undefined 
+                            ? `${['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'][selectedSlot.day]}`
+                            : selectedSlot.selectedDay || 'Seçili tarih'
+                          )
+                        : new Date(bookingData.date).toLocaleDateString('tr-TR', { 
+                            day: 'numeric', 
+                            month: 'long', 
+                            year: 'numeric' 
+                          })
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Saat</span>
+                    <span className="font-medium text-gray-900">
+                      {selectedSlot ? selectedSlot.time : bookingData.time}
+                    </span>
+                  </div>
+                  {course.location && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Konum</span>
+                      <span className="font-medium text-gray-900 flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {course.location}
+                      </span>
+                    </div>
+                  )}
+                  
+                  <div className="pt-3 border-t border-gray-200">
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-gray-900">Ücret</span>
+                      <span className="text-xl font-bold text-gray-900">{course.price}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ek Notlar (İsteğe Bağlı)
-                </label>
-                <textarea
-                  value={bookingData.notes}
-                  onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
-                  placeholder="Deneyim seviyeniz, hedefleriniz, özel istekleriniz..."
-                  className="w-full h-24 px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#d6ff00] focus:border-transparent"
-                />
-              </div>
+              )}
 
               <div className="flex gap-3 pt-4">
                 <Button
-                  onClick={() => setStep(2)}
-                  disabled={!bookingData.date || !bookingData.time || !bookingData.lessonType}
+                  onClick={handleSubmit}
+                  disabled={selectedSlot ? false : !bookingData.date || !bookingData.time}
                   className="flex-1 bg-[#d6ff00] text-black hover:bg-[#c5ee00]"
                 >
-                  Devam Et
+                  Rezervasyon Talebi Gönder
                 </Button>
                 <Button variant="outline" onClick={onClose} className="flex-1">
                   İptal
@@ -414,65 +471,6 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
       )}
 
       {step === 2 && (
-        <div className="space-y-6">
-          {/* Summary */}
-          <div className="p-4 bg-gray-50 rounded-lg space-y-3">
-            <h3 className="font-semibold text-gray-900 mb-3">Rezervasyon Özeti</h3>
-            
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Kurs</span>
-              <span className="font-medium text-gray-900">{course.title}</span>
-            </div>
-            
-            {!isGroupCourse && (
-              <>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Tarih</span>
-                  <span className="font-medium text-gray-900">
-                    {new Date(bookingData.date).toLocaleDateString('tr-TR', { 
-                      day: 'numeric', 
-                      month: 'long', 
-                      year: 'numeric' 
-                    })}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Saat</span>
-                  <span className="font-medium text-gray-900">{bookingData.time}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Ders Türü</span>
-                  <span className="font-medium text-gray-900">{bookingData.lessonType}</span>
-                </div>
-              </>
-            )}
-            
-            <div className="pt-3 border-t border-gray-200">
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-900">Ücret</span>
-                <span className="text-xl font-bold text-gray-900">{course.price}</span>
-              </div>
-              <p className="text-xs text-gray-500 mt-2">
-                Ödeme bilgileri onay sonrası tarafınıza iletilecektir.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <Button
-              onClick={handleSubmit}
-              className="flex-1 bg-[#d6ff00] text-black hover:bg-[#c5ee00]"
-            >
-              Talebi Gönder
-            </Button>
-            <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
-              Geri
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {step === 3 && (
         <div className="text-center py-8">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="h-8 w-8 text-green-600" />
@@ -484,8 +482,8 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
           
           <p className="text-gray-600 mb-6">
             {isGroupCourse 
-              ? 'Katılım talebiniz eğitmene iletildi. Onay sonrası ödeme bilgileri size gönderilecektir.'
-              : 'Rezervasyon talebiniz eğitmene iletildi. Onay sonrası ödeme bilgileri e-posta adresinize gönderilecektir.'
+              ? 'Katılım talebiniz eğitmene iletildi.'
+              : 'Rezervasyon talebiniz eğitmene iletildi.'
             }
           </p>
 
@@ -493,7 +491,7 @@ export function CourseBookingModal({ isOpen, onClose, course, trainerName }: Pro
             <Button
               onClick={() => {
                 setStep(1);
-                setBookingData({ date: '', time: '', lessonType: '', notes: '' });
+                setBookingData({ date: '', time: '' });
                 onClose();
               }}
               className="w-full bg-[#d6ff00] text-black hover:bg-[#c5ee00]"

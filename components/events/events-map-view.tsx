@@ -1,21 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Event } from '@/lib/events-data';
 import '@/lib/leaflet-config';
 import { Calendar, MapPin, Users, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { MapWrapper } from '@/components/map-wrapper';
 
-const MapContainer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.TileLayer),
-  { ssr: false }
-);
 const Marker = dynamic(
   () => import('react-leaflet').then((mod) => mod.Marker),
   { ssr: false }
@@ -30,42 +22,19 @@ type Props = {
 };
 
 export function EventsMapView({ events }: Props) {
-  const [isMounted, setIsMounted] = useState(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([39.9334, 32.8597]);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
-  if (!isMounted) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#d6ff00] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Harita yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full h-full relative">
-      <MapContainer
-        center={mapCenter}
+      <MapWrapper
+        center={[39.9334, 32.8597]}
         zoom={6}
-        style={{ height: '100%', width: '100%' }}
         className="z-0"
         scrollWheelZoom={true}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
 
         {events.map((event) => (
           <Marker
@@ -129,7 +98,7 @@ export function EventsMapView({ events }: Props) {
             </Popup>
           </Marker>
         ))}
-      </MapContainer>
+      </MapWrapper>
 
       {/* Results Counter */}
       <div className="absolute bottom-4 left-4 z-10 bg-white px-4 py-2 rounded-lg shadow-lg border border-gray-200">

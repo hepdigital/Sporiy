@@ -3,6 +3,7 @@
 import { Menu, X, User, Search, ChevronDown, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
 
@@ -18,11 +19,15 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                <span className="text-[#d6ff00] font-bold">S</span>
-              </div>
-              <span className="text-black font-semibold">sporiy</span>
+            <Link href="/" className="flex items-center">
+              <Image 
+                src="/logo.svg" 
+                alt="Sporiy" 
+                width={150} 
+                height={50}
+                className="h-10 w-auto"
+                priority
+              />
             </Link>
           </div>
 
@@ -41,7 +46,7 @@ export function Header() {
               onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
             >
-              <button className="flex items-center gap-1 text-gray-900 hover:text-[#d6ff00] transition-colors py-2">
+              <button className="flex items-center gap-1 text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2">
                 Keşfet
                 <ChevronDown className={`h-4 w-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -66,7 +71,7 @@ export function Header() {
                           <Link
                             key={sport.slug}
                             href={`/kategori/${sport.slug}`}
-                            className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#d6ff00] rounded-lg transition-colors text-sm"
+                            className="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-sm"
                           >
                             {sport.name}
                           </Link>
@@ -78,16 +83,16 @@ export function Header() {
                       <div>
                         <h3 className="text-gray-900 mb-4 text-sm uppercase tracking-wide font-semibold">Hızlı Erişim</h3>
                         <div className="space-y-2">
-                        <Link href="/kesfet" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#d6ff00] rounded-lg transition-colors text-sm">
+                        <Link href="/kesfet" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-sm">
                           Harita Görünümü
                         </Link>
-                        <Link href="/kesfet?yakin=true" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#d6ff00] rounded-lg transition-colors text-sm">
+                        <Link href="/kesfet?yakin=true" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-sm">
                           Yakınımdakiler
                         </Link>
-                        <Link href="/kesfet?siralama=populer" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#d6ff00] rounded-lg transition-colors text-sm">
+                        <Link href="/kesfet?siralama=populer" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-sm">
                           En Popüler
                         </Link>
-                        <Link href="/kesfet?siralama=yeni" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 hover:text-[#d6ff00] rounded-lg transition-colors text-sm">
+                        <Link href="/kesfet?siralama=yeni" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-sm">
                           En Yeni İlanlar
                         </Link>
                         </div>
@@ -110,13 +115,16 @@ export function Header() {
                 </div>
               )}
             </div>
-            <Link href="/kulupler" className="text-gray-900 hover:text-[#d6ff00] transition-colors m-0">
+            <Link href="/kurslar" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 m-0">
+              Kurslar
+            </Link>
+            <Link href="/kulupler" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 m-0">
               Kulüpler
             </Link>
-            <Link href="/egitmenler" className="text-gray-900 hover:text-[#d6ff00] transition-colors m-0">
+            <Link href="/egitmenler" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 m-0">
               Eğitmenler
             </Link>
-            <Link href="/etkinlikler" className="text-gray-900 hover:text-[#d6ff00] transition-colors m-0">
+            <Link href="/etkinlikler" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 m-0">
               Etkinlikler
             </Link>
           </div>
@@ -161,16 +169,19 @@ export function Header() {
                 <MessageCircle className="h-4 w-4" />
                 Sosyal
               </Link>
-              <Link href="/kesfet" className="text-gray-900 hover:text-[#d6ff00] transition-colors">
+              <Link href="/kesfet" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 border-b-2 border-transparent">
                 Keşfet
               </Link>
-              <Link href="/kulupler" className="text-gray-900 hover:text-[#d6ff00] transition-colors">
+              <Link href="/kurslar" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 border-b-2 border-transparent">
+                Kurslar
+              </Link>
+              <Link href="/kulupler" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 border-b-2 border-transparent">
                 Kulüpler
               </Link>
-              <Link href="/egitmenler" className="text-gray-900 hover:text-[#d6ff00] transition-colors">
+              <Link href="/egitmenler" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 border-b-2 border-transparent">
                 Eğitmenler
               </Link>
-              <Link href="/etkinlikler" className="text-gray-900 hover:text-[#d6ff00] transition-colors">
+              <Link href="/etkinlikler" className="text-gray-900 hover:border-b-2 hover:border-gray-900 transition-all py-2 border-b-2 border-transparent">
                 Etkinlikler
               </Link>
               <div className="flex flex-col gap-2 pt-4 border-t border-gray-100">

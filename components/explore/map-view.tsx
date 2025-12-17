@@ -1,18 +1,9 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { FilterState } from './explore-view';
 
-// Leaflet'i client-side only olarak yükle
-const MapContainer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.TileLayer),
-  { ssr: false }
-);
 const Marker = dynamic(
   () => import('react-leaflet').then((mod) => mod.Marker),
   { ssr: false }
@@ -26,6 +17,7 @@ import Link from 'next/link';
 import '@/lib/leaflet-config';
 import { Star, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { MapWrapper } from '@/components/map-wrapper';
 
 type Profile = {
   id: number;
@@ -58,14 +50,9 @@ export function MapView({
   selectedProfileId,
   setSelectedProfileId
 }: Props) {
-  const [isMounted, setIsMounted] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([39.9334, 32.8597]);
   const [mapZoom, setMapZoom] = useState(6);
   const markerRefs = useRef<Map<number, any>>(new Map());
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Update map center when user location is available
   useEffect(() => {
@@ -97,30 +84,14 @@ export function MapView({
     }
   }, [hoveredProfileId]);
 
-  if (!isMounted) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#d6ff00] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Harita yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full h-full relative">
-      <MapContainer
+      <MapWrapper
         center={mapCenter}
         zoom={mapZoom}
-        style={{ height: '100%', width: '100%' }}
         className="z-0"
         scrollWheelZoom={true}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
 
         {/* User Location Marker */}
         {filters.userLocation && (
@@ -193,7 +164,7 @@ export function MapView({
             </Marker>
           );
         })}
-      </MapContainer>
+      </MapWrapper>
 
       {/* Results Counter */}
       <div className="absolute bottom-4 left-4 z-10 bg-white px-3 py-2 rounded-lg shadow-lg border border-gray-200">

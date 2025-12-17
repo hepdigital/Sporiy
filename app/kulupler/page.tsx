@@ -1,11 +1,7 @@
-import { Metadata } from 'next';
-import { ClubsListView } from '@/components/clubs/clubs-list-view';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Spor Kulüpleri - Sporiy',
-  description: 'Türkiye\'nin en iyi su sporları kulüplerini keşfedin. Yüzme, kano, yelken ve daha fazlası.',
-};
+import { ClubSearchResults } from '@/components/search/club-search-results';
 
 export default function ClubsPage() {
-  return <ClubsListView />;
+  return <ClubSearchResults location="" />;
 }
