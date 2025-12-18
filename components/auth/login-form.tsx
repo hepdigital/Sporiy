@@ -7,7 +7,11 @@ import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-export function LoginForm() {
+type LoginFormProps = {
+  onSuccess?: () => void;
+};
+
+export function LoginForm({ onSuccess }: LoginFormProps = {}) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +37,7 @@ export function LoginForm() {
         router.push('/panel/sporcu');
       }
       setIsLoading(false);
+      onSuccess?.(); // Modal'ı kapatmak için
     }, 1000);
   };
 

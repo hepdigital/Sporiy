@@ -9,7 +9,11 @@ import { Input } from '@/components/ui/input';
 
 type UserType = 'sporcu' | 'kulup' | 'egitmen';
 
-export function RegisterForm() {
+type RegisterFormProps = {
+  onSuccess?: () => void;
+};
+
+export function RegisterForm({ onSuccess }: RegisterFormProps = {}) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +56,7 @@ export function RegisterForm() {
         router.push('/panel/profesyonel');
       }
       setIsLoading(false);
+      onSuccess?.(); // Modal'ı kapatmak için
     }, 1000);
   };
 
