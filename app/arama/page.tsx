@@ -1,11 +1,11 @@
 'use client';
 
-import { use } from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SearchResults } from '@/components/search/search-results';
 import { SearchHeader } from '@/components/search/search-header';
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
 
@@ -14,5 +14,13 @@ export default function SearchPage() {
       <SearchHeader query={query} />
       <SearchResults query={query} />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center">Yükleniyor...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }

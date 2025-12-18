@@ -316,13 +316,14 @@ const mockCourses = [
 ];
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export default function CoursePage({ params }: Props) {
-  const course = mockCourses.find(c => c.slug === params.slug);
+export default async function CoursePage({ params }: Props) {
+  const { slug } = await params;
+  const course = mockCourses.find(c => c.slug === slug);
 
   if (!course) {
     notFound();
@@ -331,7 +332,7 @@ export default function CoursePage({ params }: Props) {
   return <CourseDetailPage course={course} />;
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return mockCourses.map((course) => ({
     slug: course.slug,
   }));

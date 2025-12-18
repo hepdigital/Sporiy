@@ -14,20 +14,21 @@ const categories = [
 ];
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export default function CategoryPage({ params }: Props) {
-  const category = categories.find(c => c.slug === params.slug);
+export default async function CategoryPage({ params }: Props) {
+  const { slug } = await params;
+  const category = categories.find(c => c.slug === slug);
 
   if (!category) {
     notFound();
   }
 
   // Get the appropriate icon component for this category
-  const IconComponent = sportIcons[params.slug as keyof typeof sportIcons] || Waves;
+  const IconComponent = sportIcons[slug as keyof typeof sportIcons] || Waves;
 
   return (
     <div>
@@ -85,7 +86,7 @@ export default function CategoryPage({ params }: Props) {
   );
 }
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return categories.map((category) => ({
     slug: category.slug,
   }));
