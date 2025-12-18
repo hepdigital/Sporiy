@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { RegisterForm } from '@/components/auth/register-form';
 
 export const metadata: Metadata = {
@@ -12,11 +13,14 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Logo */}
-        <Link href="/" className="flex items-center justify-center gap-2 mb-6">
-          <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center">
-            <span className="text-[#d6ff00] font-bold text-xl">S</span>
-          </div>
-          <span className="text-black font-semibold text-2xl">sporiy</span>
+        <Link href="/" className="flex items-center justify-center mb-6">
+          <Image 
+            src="/logo.svg" 
+            alt="Sporiy" 
+            width={150}
+            height={48}
+            className="h-12 w-auto"
+          />
         </Link>
 
         <h2 className="text-center text-3xl font-bold text-gray-900">

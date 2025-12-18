@@ -131,17 +131,23 @@ export function Header() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex md:items-center md:gap-3">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <Search className="h-4 w-4" />
-              <span>Ara</span>
-            </Button>
-            <Button variant="outline" size="sm" className="gap-2">
-              <User className="h-4 w-4" />
-              <span>Giriş Yap</span>
-            </Button>
-            <Button size="sm" className="bg-[#d6ff00] text-black hover:bg-[#c5ee00]">
-              Kayıt Ol
-            </Button>
+            <Link href="/arama">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <Search className="h-4 w-4" />
+                <span>Ara</span>
+              </Button>
+            </Link>
+            <Link href="/giris">
+              <Button variant="outline" size="sm" className="gap-2">
+                <User className="h-4 w-4" />
+                <span>Giriş Yap</span>
+              </Button>
+            </Link>
+            <Link href="/kayit">
+              <Button size="sm" className="bg-[#d6ff00] text-black hover:bg-[#c5ee00]">
+                Kayıt Ol
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -185,13 +191,17 @@ export function Header() {
                 Etkinlikler
               </Link>
               <div className="flex flex-col gap-2 pt-4 border-t border-gray-100">
-                <Button variant="outline" size="sm" className="w-full gap-2">
-                  <User className="h-4 w-4" />
-                  <span>Giriş Yap</span>
-                </Button>
-                <Button size="sm" className="w-full bg-[#d6ff00] text-black hover:bg-[#c5ee00]">
-                  Kayıt Ol
-                </Button>
+                <Link href="/giris">
+                  <Button variant="outline" size="sm" className="w-full gap-2">
+                    <User className="h-4 w-4" />
+                    <span>Giriş Yap</span>
+                  </Button>
+                </Link>
+                <Link href="/kayit">
+                  <Button size="sm" className="w-full bg-[#d6ff00] text-black hover:bg-[#c5ee00]">
+                    Kayıt Ol
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
