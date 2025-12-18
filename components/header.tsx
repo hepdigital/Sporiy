@@ -6,10 +6,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
+import { AuthModal } from './auth/auth-modal';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [authModal, setAuthModal] = useState<{ isOpen: boolean; mode: 'login' | 'register' }>({ 
+    isOpen: false, 
+    mode: 'login' 
+  });
   const pathname = usePathname();
   const isProfilePage = pathname !== '/';
 
@@ -137,17 +142,22 @@ export function Header() {
                 <span>Ara</span>
               </Button>
             </Link>
-            <Link href="/giris">
-              <Button variant="outline" size="sm" className="gap-2">
-                <User className="h-4 w-4" />
-                <span>Giriş Yap</span>
-              </Button>
-            </Link>
-            <Link href="/kayit">
-              <Button size="sm" className="bg-[#d6ff00] text-black hover:bg-[#c5ee00]">
-                Kayıt Ol
-              </Button>
-            </Link>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+              onClick={() => setAuthModal({ isOpen: true, mode: 'login' })}
+            >
+              <User className="h-4 w-4" />
+              <span>Giriş Yap</span>
+            </Button>
+            <Button 
+              size="sm" 
+              className="bg-[#d6ff00] text-black hover:bg-[#c5ee00]"
+              onClick={() => setAuthModal({ isOpen: true, mode: 'register' })}
+            >
+              Kayıt Ol
+            </Button>
           </div>
 
           {/* Mobile menu button */}
@@ -191,22 +201,40 @@ export function Header() {
                 Etkinlikler
               </Link>
               <div className="flex flex-col gap-2 pt-4 border-t border-gray-100">
-                <Link href="/giris">
-                  <Button variant="outline" size="sm" className="w-full gap-2">
-                    <User className="h-4 w-4" />
-                    <span>Giriş Yap</span>
-                  </Button>
-                </Link>
-                <Link href="/kayit">
-                  <Button size="sm" className="w-full bg-[#d6ff00] text-black hover:bg-[#c5ee00]">
-                    Kayıt Ol
-                  </Button>
-                </Link>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full gap-2"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setAuthModal({ isOpen: true, mode: 'login' });
+                  }}
+                >
+                  <User className="h-4 w-4" />
+                  <span>Giriş Yap</span>
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="w-full bg-[#d6ff00] text-black hover:bg-[#c5ee00]"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setAuthModal({ isOpen: true, mode: 'register' });
+                  }}
+                >
+                  Kayıt Ol
+                </Button>
               </div>
             </div>
           </div>
         )}
       </nav>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModal.isOpen}
+        onClose={() => setAuthModal({ isOpen: false, mode: 'login' })}
+        initialMode={authModal.mode}
+      />
     </header>
   );
 }

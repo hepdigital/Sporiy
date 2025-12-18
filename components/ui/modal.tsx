@@ -9,9 +9,10 @@ type Props = {
   title?: string;
   children: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  className?: string;
 };
 
-export function Modal({ isOpen, onClose, title, children, size = 'md' }: Props) {
+export function Modal({ isOpen, onClose, title, children, size = 'md', className = '' }: Props) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -44,7 +45,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: Props) 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className={`relative w-full ${sizeClasses[size]} bg-white rounded-2xl shadow-xl transform transition-all`}
+          className={`relative w-full ${sizeClasses[size]} bg-white rounded-2xl shadow-xl transform transition-all ${className}`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
